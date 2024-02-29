@@ -1,0 +1,29 @@
+name: "💡 Change Request"
+description: Create a new ticket for a new change request
+title: "[REQUEST] - <title>"
+labels: ["pending"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: Provide a brief explanation of the change
+      placeholder: Describe in a few lines your change request
+    validations:
+      required: true
+  - type: textarea
+    id: drawbacks
+    attributes:
+      label: "Drawbacks"
+      description: What are the drawbacks of your change request ?
+      placeholder: Identify the drawbacks while being neutral on your change request
+    validations:
+      required: true
+  - type: textarea
+    id: unresolved_question
+    attributes:
+      label: "Unresolved questions"
+      description: What questions still remain unresolved ?
+      placeholder: Identify any unresolved issues.
+    validations:
+      required: false

@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  buildTest:
+    uses: pabramber01/F1-Prediction/.github/workflows/build.yml@main
+    permissions:
+      pages: write
+      id-token: write
+
+  release:
+    needs: buildTest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v1
