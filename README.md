@@ -1,4 +1,4 @@
-[![Build](https://github.com/pabramber01/F1-Prediction/actions/workflows/build.yml/badge.svg?branch=main)](https://github.cohttps://github.com/pabramber01/F1-Prediction/blob/main/README.mdm/pabramber01/F1-Prediction/actions/workflows/build.yml)
+[![Test](https://github.com/pabramber01/F1-Prediction/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/pabramber01/F1-Prediction/actions/workflows/test.yml)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/pabramber01/F1-Prediction)
 ![GitHub](https://img.shields.io/github/license/pabramber01/F1-Prediction)
 
