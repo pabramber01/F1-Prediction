@@ -8,16 +8,30 @@ on:
 jobs:
   buildTest:
     uses: pabramber01/F1-Prediction/.github/workflows/build.yml@main
-    permissions:
-      pages: write
-      id-token: write
 
   release:
     needs: buildTest
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install dependencies
+        run: pip install -r ./requirements.txt
+      - name: Build the book
+        run: PYDEVD_DISABLE_FILE_VALIDATION=1 jb build -qq src/main.ipynb
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_build/_page/src-main/html/"
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
       - name: Release
         uses: softprops/action-gh-release@v1
