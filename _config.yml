@@ -1,7 +1,7 @@
 title: ""
 author: pabramber01
 copyright: "2024"
-logo: "https://raw.githubusercontent.com/pabramber01/F1-Prediction/main/gh-pages/logo.png"
+logo: "../gh-pages/logo.png"
 exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints"]
 only_build_toc_files: false
 execute:
@@ -28,7 +28,7 @@ parse:
   myst_url_schemes: [mailto, http, https]
   myst_dmath_double_inline: true
 html:
-  favicon: "https://raw.githubusercontent.com/pabramber01/F1-Prediction/main/gh-pages/favicon.png"
+  favicon: "../gh-pages/favicon.png"
   use_edit_page_button: false
   use_repository_button: true
   use_issues_button: false

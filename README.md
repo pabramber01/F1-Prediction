@@ -13,4 +13,5 @@ The FIA Formula 1 World Championship, better known as Formula 1, F1 or Formula O
 The objective of this work is to carry out an analysis of the data collected from Formula 1 with the intention of making a predictive model about, for example, the winner of the Grand Prix or the podium.
 
 All the work done can be found inside the src/main.ipynb file or on the web via the following link:
+
 - https://pabramber01.github.io/F1-Prediction
