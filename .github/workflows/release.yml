@@ -6,11 +6,11 @@ on:
       - "*"
 
 jobs:
-  buildTest:
-    uses: pabramber01/F1-Prediction/.github/workflows/build.yml@main
+  test:
+    uses: pabramber01/F1-Prediction/.github/workflows/test.yml@main
 
   release:
-    needs: buildTest
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: write
