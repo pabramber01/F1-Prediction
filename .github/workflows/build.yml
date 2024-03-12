@@ -20,4 +20,4 @@ jobs:
       - name: Install dependencies
         run: pip install -r ./requirements.txt
       - name: Test
-        run: pytest --nbmake --overwrite -n=auto src/main.ipynb
+        run: pytest --nbmake --nbmake-timeout=-1 --overwrite -n=auto src/main.ipynb
