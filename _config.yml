@@ -7,7 +7,7 @@ only_build_toc_files: false
 execute:
   execute_notebooks: auto
   cache: "_build/_page/src-main/.jupyter_cache"
-  exclude_patterns: []
+  exclude_patterns: ["./src/main.ipynb"]
   timeout: -1
   run_in_temp: false
   allow_errors: false
