@@ -1,0 +1,56 @@
+format: jb-book
+root: f1_prediction/f1_prediction
+parts:
+  - caption: Preprocessing
+    chapters:
+      - file: f1_prediction/preprocessing/data_selection
+      - file: f1_prediction/preprocessing/data_transformation
+      - file: f1_prediction/preprocessing/missing_values
+
+  - caption: Base model
+    chapters:
+      - file: f1_prediction/base_model/model_validation
+        sections:
+          - file: f1_prediction/base_model/model_validation_pos
+          - file: f1_prediction/base_model/model_validation_posvar
+          - file: f1_prediction/base_model/model_validation_posfxd
+          - file: f1_prediction/base_model/model_validation_wnr
+          - file: f1_prediction/base_model/model_validation_pdm
+          - file: f1_prediction/base_model/model_validation_nxt
+      - file: f1_prediction/base_model/simple_tuning
+        sections:
+          - file: f1_prediction/base_model/simple_tuning_posvar
+          - file: f1_prediction/base_model/simple_tuning_pdm
+      - file: f1_prediction/base_model/feature_selection
+        sections:
+          - file: f1_prediction/base_model/feature_selection_posvar
+          - file: f1_prediction/base_model/feature_selection_pdm
+      - file: f1_prediction/base_model/advanced_tuning
+        sections:
+          - file: f1_prediction/base_model/advanced_tuning_posvar
+          - file: f1_prediction/base_model/advanced_tuning_pdm
+
+  - caption: Adding data
+    chapters:
+      - file: f1_prediction/adding_data/model_validation
+        sections:
+          - file: f1_prediction/adding_data/model_validation_wea
+            sections:
+              - file: f1_prediction/adding_data/model_validation_wea_posvar
+              - file: f1_prediction/adding_data/model_validation_wea_pdm
+          - file: f1_prediction/adding_data/model_validation_cir
+            sections:
+              - file: f1_prediction/adding_data/model_validation_cir_posvar
+              - file: f1_prediction/adding_data/model_validation_cir_pdm
+          - file: f1_prediction/adding_data/model_validation_add
+            sections:
+              - file: f1_prediction/adding_data/model_validation_add_posvar
+              - file: f1_prediction/adding_data/model_validation_add_pdm
+          - file: f1_prediction/adding_data/model_validation_drv
+            sections:
+              - file: f1_prediction/adding_data/model_validation_drv_posvar
+              - file: f1_prediction/adding_data/model_validation_drv_pdm
+          - file: f1_prediction/adding_data/model_validation_all
+            sections:
+              - file: f1_prediction/adding_data/model_validation_all_posvar
+              - file: f1_prediction/adding_data/model_validation_all_pdm

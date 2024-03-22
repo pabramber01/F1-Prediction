@@ -1,17 +1,19 @@
 title: ""
 author: pabramber01
 copyright: "2024"
-logo: "../gh-pages/logo.png"
+logo: "f1_prediction/assets/images/logo.png"
 exclude_patterns: [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints"]
-only_build_toc_files: false
+only_build_toc_files: true
+
 execute:
   execute_notebooks: auto
-  cache: "_build/_page/src-main/.jupyter_cache"
-  exclude_patterns: ["./src/main.ipynb"]
+  cache: "_build/.jupyter_cache"
+  exclude_patterns: ["*"]
   timeout: -1
   run_in_temp: false
   allow_errors: false
   stderr_output: remove-warn
+
 parse:
   myst_enable_extensions:
     - amsmath
@@ -27,34 +29,39 @@ parse:
     - tasklist
   myst_url_schemes: [mailto, http, https]
   myst_dmath_double_inline: true
+
 html:
-  favicon: "../gh-pages/favicon.png"
+  favicon: "f1_prediction/assets/images/favicon.png"
   use_edit_page_button: false
   use_repository_button: true
   use_issues_button: false
   use_multitoc_numbering: true
   extra_footer: "GPL-3.0 license"
   google_analytics_id: ""
-  home_page_in_navbar: true
+  home_page_in_navbar: false
   baseurl: "https://pabramber01.github.io/F1-Prediction"
   comments:
     hypothesis: false
     utterances: false
   analytics:
   announcement: ""
+
 latex:
   latex_engine: pdflatex
   use_jupyterbook_latex: true
+
 launch_buttons:
   notebook_interface: classic
   binderhub_url: ""
   jupyterhub_url: ""
   thebe: false
   colab_url: ""
+
 repository:
   url: https://github.com/pabramber01/F1-Prediction
-  path_to_book: "src/"
+  path_to_book: "./"
   branch: main
+
 sphinx:
   extra_extensions:
   local_extensions:
