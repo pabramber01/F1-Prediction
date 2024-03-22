@@ -5,7 +5,7 @@
 # F1 Prediction
 
 <p align="center">
-  <img src="gh-pages/logo.png" alt="logo">
+  <img src="f1_prediction/assets/images/logo.png" alt="logo">
 </p>
 
 The FIA Formula 1 World Championship, better known as Formula 1, F1 or Formula One, is the premier international motorsport competition and the most popular and prestigious motorsport championship in the world since 1950. The governing body is the Fédération Internationale de l'Automobile (FIA). Since September 2016, following the acquisition of Formula One Group, the American company Liberty Media has been responsible for managing and operating the championship.
