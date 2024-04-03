@@ -54,3 +54,15 @@ parts:
             sections:
               - file: f1_prediction/adding_data/model_validation_all_posvar
               - file: f1_prediction/adding_data/model_validation_all_pdm
+      - file: f1_prediction/adding_data/simple_tuning
+        sections:
+          - file: f1_prediction/adding_data/simple_tuning_posvar
+          - file: f1_prediction/adding_data/simple_tuning_pdm
+      - file: f1_prediction/adding_data/feature_selection
+        sections:
+          - file: f1_prediction/adding_data/feature_selection_posvar
+          - file: f1_prediction/adding_data/feature_selection_pdm
+      - file: f1_prediction/adding_data/advanced_tuning
+        sections:
+          - file: f1_prediction/adding_data/advanced_tuning_posvar
+          - file: f1_prediction/adding_data/advanced_tuning_pdm
