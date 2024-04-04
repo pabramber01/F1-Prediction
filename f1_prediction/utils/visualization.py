@@ -11,7 +11,10 @@ from optuna.visualization.matplotlib import plot_optimization_history
 
 logging.set_verbosity(logging.WARNING)
 
+from scipy import stats
+
 from utils.custom_scorers import balanced_accuracy_score
+from utils.custom_cvs import VariableTimeSeriesSplit
 
 import sys
 import textwrap
@@ -319,4 +322,104 @@ def model_tuning(params, model, X, y, cv, scoring):
     )
     print("\n".join(textwrap.wrap(output, 88, subsequent_indent="\t")))
     plot_optimization_history(study, target_name="Performance")
+    plt.show()
+
+
+def model_pgrmlly_outlier_treatment(model, df, X, y, scorer, th):
+    """Programmatically treats outliers.
+
+    Plot performance per threshold.
+
+    Parameters
+    ----------
+    params : array-like
+        Parameters for optuna trial.
+
+    model : array-like
+        Model to test.
+
+    df : dataframe
+        All attributes.
+
+    X : array-like of shape (n_samples, n_attributes)
+        Selected train attributes.
+
+    y : array-like of shape (n_samples,)
+        Target attributes.
+
+    scorer : scoring object
+        Scorer to compute on the three methods.
+
+    th : tuple (min, max, step)
+        Threshold range.
+    """
+
+    def get_scores(model, df_out, X_out, y_out, scorer):
+        instances_per_year = df_out["raceYear"].value_counts(sort=False)
+        instances_per_half = (
+            np.array(
+                list(
+                    zip(
+                        np.floor(instances_per_year / 2),
+                        np.ceil(instances_per_year / 2),
+                    )
+                )
+            )
+            .flatten()
+            .astype(np.int32)
+        )
+
+        n_splits = len(instances_per_half) - 10
+        max_train_size = [instances_per_half[i : 10 + i].sum() for i in range(n_splits)]
+        test_size = instances_per_half[10:].tolist()
+        tscv = VariableTimeSeriesSplit(
+            n_splits=n_splits, max_train_size=max_train_size, test_size=test_size
+        )
+
+        s = cross_val_score(model, X_out, y_out, cv=tscv, scoring=scorer, n_jobs=-1)
+        return s.sum() / len(s)
+
+    th_min, th_max, th_step = th
+    z_scores = np.abs(stats.zscore(X))
+
+    ths = []
+    scores = []
+
+    for t in np.arange(th_min, th_max, th_step):
+        df_out = df[(z_scores < t).all(axis=1)]
+        X_out = X[(z_scores < t).all(axis=1)]
+        y_out = y[(z_scores < t).all(axis=1)]
+        ths.append(t)
+        scores.append(get_scores(model, df_out, X_out, y_out, scorer))
+
+    no_treat = get_scores(model, df, X, y, scorer)
+
+    print("Performance without treatment:", no_treat)
+    print("Best performance with treatment:")
+    print("     threshold =", max(zip(ths, scores), key=lambda x: x[1])[0])
+    print("     performance =", max(scores))
+
+    _, (ax) = plt.subplots(nrows=1, ncols=1, figsize=(6, 6))
+    ax.plot(
+        ths,
+        scores,
+        color="blue",
+        marker="o",
+        label="With treatment",
+    )
+    ax.hlines(
+        no_treat,
+        xmin=th_min,
+        xmax=th_max,
+        colors="purple",
+        linestyles="--",
+        lw=2,
+        label="Without treatment",
+    )
+    ax.set_xticks(np.arange(th_min, th_max))
+    ax.title.set_text("Programmatically outlier treatment evolution")
+    ax.set_xlabel("Threshold")
+    ax.set_ylabel("Performance")
+    ax.grid()
+    ax.legend(loc="lower right")
     plt.show()

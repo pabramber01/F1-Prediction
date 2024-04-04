@@ -66,3 +66,28 @@ parts:
         sections:
           - file: f1_prediction/adding_data/advanced_tuning_posvar
           - file: f1_prediction/adding_data/advanced_tuning_pdm
+
+  - caption: Outliers
+    chapters:
+      - file: f1_prediction/outliers/model_validation
+        sections:
+          - file: f1_prediction/outliers/model_validation_atm
+            sections:
+              - file: f1_prediction/outliers/model_validation_atm_posvar
+              - file: f1_prediction/outliers/model_validation_atm_pdm
+          - file: f1_prediction/outliers/model_validation_mnl
+            sections:
+              - file: f1_prediction/outliers/model_validation_mnl_posvar
+              - file: f1_prediction/outliers/model_validation_mnl_pdm
+      - file: f1_prediction/outliers/simple_tuning
+        sections:
+          - file: f1_prediction/outliers/simple_tuning_posvar
+          - file: f1_prediction/outliers/simple_tuning_pdm
+      - file: f1_prediction/outliers/feature_selection
+        sections:
+          - file: f1_prediction/outliers/feature_selection_posvar
+          - file: f1_prediction/outliers/feature_selection_pdm
+      - file: f1_prediction/outliers/advanced_tuning
+        sections:
+          - file: f1_prediction/outliers/advanced_tuning_posvar
+          - file: f1_prediction/outliers/advanced_tuning_pdm
