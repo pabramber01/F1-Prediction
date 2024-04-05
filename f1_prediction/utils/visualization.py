@@ -355,18 +355,12 @@ def model_pgrmlly_outlier_treatment(model, df, X, y, scorer, th):
     """
 
     def get_scores(model, df_out, X_out, y_out, scorer):
-        instances_per_year = df_out["raceYear"].value_counts(sort=False)
+        mid_rc = df.groupby("raceYear")["raceRound"].max().to_numpy() // 2
+        get_half = (
+            lambda x: f'{x["raceYear"]}{x["raceRound"] <= mid_rc[x["raceYear"] - 2006]}'
+        )
         instances_per_half = (
-            np.array(
-                list(
-                    zip(
-                        np.floor(instances_per_year / 2),
-                        np.ceil(instances_per_year / 2),
-                    )
-                )
-            )
-            .flatten()
-            .astype(np.int32)
+            df.apply(get_half, axis=1).value_counts(sort=False).to_numpy()
         )
 
         n_splits = len(instances_per_half) - 10
