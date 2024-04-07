@@ -15,6 +15,7 @@ from scipy import stats
 
 from utils.custom_scorers import balanced_accuracy_score
 from utils.custom_cvs import VariableTimeSeriesSplit
+from utils.custom_predicts import ranker_predict
 
 import sys
 import textwrap
@@ -31,6 +32,8 @@ def model_test(
     *,
     scorers=[make_scorer(balanced_accuracy_score), "neg_mean_absolute_error"],
     interval=None,
+    rank=None,
+    multiclass=None,
     labels=None,
 ):
     """Test the models.
@@ -57,6 +60,12 @@ def model_test(
     interval : int, default=None
         Interval where y_pred is consider as hit.
 
+    rank : bool, default=None
+        Indicator if it is used to rank or not.
+
+    multiclass : bool, default=None
+        Indicator that it is used for rank variable position or podium.
+
     labels : array-like, default=None
         Labels for classification report and confusion matrix.
     """
@@ -69,7 +78,10 @@ def model_test(
 
         for scorer in scorers:
             scores = cross_val_score(model, X, y, cv=cv, scoring=scorer, n_jobs=-1)
-            print(f"CV with {scorer}:", scores.sum() / len(scores))
+            if rank:
+                print(f"CV with {scorer.__name__}:", scores.sum() / len(scores))
+            else:
+                print(f"CV with {scorer}:", scores.sum() / len(scores))
 
         splits = [
             (X.iloc[train], X.iloc[test], y.iloc[train], y.iloc[test])
@@ -82,7 +94,17 @@ def model_test(
             X_train, X_test, y_train, y_test = split
             model.fit(X_train, y_train)
             y_tests = np.append(y_tests, y_test.values)
-            y_preds = np.append(y_preds, np.rint(model.predict(X_test)).astype(int))
+            if rank:
+                y_preds = np.append(
+                    y_preds,
+                    X_test.groupby("qid")
+                    .apply(lambda x: ranker_predict(model, x, multiclass))
+                    .explode()
+                    .reset_index(drop=True)
+                    .to_numpy(dtype=int),
+                )
+            else:
+                y_preds = np.append(y_preds, np.rint(model.predict(X_test)).astype(int))
 
         if interval is not None:
             y_preds = np.where(np.abs(y_tests - y_preds) <= interval, y_tests, y_preds)
@@ -103,7 +125,7 @@ def model_test(
     plt.show()
 
 
-def model_selection(model, X, y, cv, scoring):
+def model_selection(model, X, y, cv, scoring, *, rank=None):
     """Test the model with selected features.
 
     Compute sequential forward selector, permutation importance and
@@ -128,13 +150,20 @@ def model_selection(model, X, y, cv, scoring):
 
     scoring : scoring object
         Scorer to compute on the three methods.
+
+    rank : bool, default=None
+        Indicator if it is used to rank or not.
     """
 
     def fitness_func(ga_instance, individual, individual_idx):
         res = []
 
-        get_idx = lambda _: [i for i in range(len(individual)) if individual[i] == 1]
-        attributes = X.iloc[:, get_idx]
+        if rank:
+            individual[X.columns.get_loc("qid")] = 1
+
+        idx = [i for i in range(len(individual)) if individual[i] == 1]
+
+        attributes = X.iloc[:, idx]
         objective = y
 
         if not attributes.empty:
@@ -170,7 +199,11 @@ def model_selection(model, X, y, cv, scoring):
         scoring=scoring,
         cv=cv,
         n_jobs=-1,
-    ).fit(X, y)
+    )
+    if rank:
+        sfs.fit(X, y, qid=X.qid)
+    else:
+        sfs.fit(X, y)
 
     # Genetic Algorithms
     individual_size = X.shape[1]
@@ -292,6 +325,8 @@ def model_tuning(params, model, X, y, cv, scoring):
             data = param[1]
             if type == "int":
                 params_trial[data[0]] = trial.suggest_int(*data)
+            elif type == "float":
+                params_trial[data[0]] = trial.suggest_float(*data)
             elif type == "categorical":
                 params_trial[data[0]] = trial.suggest_categorical(*data)
             elif type == "mlp":

@@ -91,3 +91,22 @@ parts:
         sections:
           - file: f1_prediction/outliers/advanced_tuning_posvar
           - file: f1_prediction/outliers/advanced_tuning_pdm
+
+  - caption: Other models
+    chapters:
+      - file: f1_prediction/other_models/model_validation
+        sections:
+          - file: f1_prediction/other_models/model_validation_posvar
+          - file: f1_prediction/other_models/model_validation_pdm
+      - file: f1_prediction/other_models/simple_tuning
+        sections:
+          - file: f1_prediction/other_models/simple_tuning_posvar
+          - file: f1_prediction/other_models/simple_tuning_pdm
+      - file: f1_prediction/other_models/feature_selection
+        sections:
+          - file: f1_prediction/other_models/feature_selection_posvar
+          - file: f1_prediction/other_models/feature_selection_pdm
+      - file: f1_prediction/other_models/advanced_tuning
+        sections:
+          - file: f1_prediction/other_models/advanced_tuning_posvar
+          - file: f1_prediction/other_models/advanced_tuning_pdm

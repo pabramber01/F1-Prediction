@@ -1,7 +1,10 @@
 from sklearn.utils._param_validation import validate_params, StrOptions
 from sklearn.utils.validation import check_consistent_length, check_array
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, mean_absolute_error
 
+from utils.custom_predicts import ranker_predict
+
+import pandas as pd
 import numpy as np
 
 import warnings
@@ -66,6 +69,78 @@ def balanced_accuracy_score(y_true, y_pred, *, sample_weight=None, adjusted=Fals
         score -= chance
         score /= 1 - chance
     return score
+
+
+def balanced_accuracy_ranker(ranker, X_test, y_test):
+    """Compute the balanced accuracy score on rank model.
+
+    Parameters
+    ----------
+    ranker : ranker model
+        Ranker model with which is going to predict X_test.
+
+    X_test : array-like of shape (n_samples, n_attributes)
+        Test attributes.
+
+    y_test : array-like of shape (n_samples,)
+        Test target.
+
+    Returns
+    -------
+    balanced_accuracy : float
+        Balanced accuracy score.
+    """
+    y_true = y_test.to_numpy()
+
+    if type(X_test) == np.ndarray:
+        cols = list(range(X_test.shape[1] - 1)) + ["qid"]
+        X_test = pd.DataFrame(X_test, columns=cols)
+
+    y_pred = (
+        X_test.groupby("qid")
+        .apply(lambda x: ranker_predict(ranker, x, False))
+        .explode()
+        .reset_index(drop=True)
+        .to_numpy(dtype=int)
+    )
+
+    return balanced_accuracy_score(y_true, y_pred)
+
+
+def mean_absolute_ranker(ranker, X_test, y_test):
+    """Compute the mean absolute error on rank model.
+
+    Parameters
+    ----------
+    ranker : ranker model
+        Ranker model with which is going to predict X_test.
+
+    X_test : array-like of shape (n_samples, n_attributes)
+        Test attributes.
+
+    y_test : array-like of shape (n_samples,)
+        Test target.
+
+    Returns
+    -------
+    loss : float
+        Mean absolute error.
+    """
+    y_true = y_test.to_numpy()
+
+    if type(X_test) == np.ndarray:
+        cols = list(range(X_test.shape[1] - 1)) + ["qid"]
+        X_test = pd.DataFrame(X_test, columns=cols)
+
+    y_pred = (
+        X_test.groupby("qid")
+        .apply(lambda x: ranker_predict(ranker, x, False))
+        .explode()
+        .reset_index(drop=True)
+        .to_numpy(dtype=int)
+    )
+
+    return mean_absolute_error(y_true, y_pred)
 
 
 @validate_params(
@@ -133,6 +208,45 @@ def balanced_accuracy_1interval_score(
     return score
 
 
+import pandas as pd
+
+
+def balanced_accuracy_1interval_ranker(ranker, X_test, y_test):
+    """Compute the balanced accuracy score with +-1 interval on rank model.
+
+    Parameters
+    ----------
+    ranker : ranker model
+        Ranker model with which is going to predict X_test.
+
+    X_test : array-like of shape (n_samples, n_attributes)
+        Test attributes.
+
+    y_test : array-like of shape (n_samples,)
+        Test target.
+
+    Returns
+    -------
+    balanced_accuracy : float
+        Balanced accuracy score with +-1 interval.
+    """
+    y_true = y_test.to_numpy()
+
+    if type(X_test) == np.ndarray:
+        cols = list(range(X_test.shape[1] - 1)) + ["qid"]
+        X_test = pd.DataFrame(X_test, columns=cols)
+
+    y_pred = (
+        X_test.groupby("qid")
+        .apply(lambda x: ranker_predict(ranker, x, True))
+        .explode()
+        .reset_index(drop=True)
+        .to_numpy(dtype=int)
+    )
+
+    return balanced_accuracy_1interval_score(y_true, y_pred)
+
+
 @validate_params(
     {
         "y_true": ["array-like"],
@@ -195,6 +309,42 @@ def mean_absolute_1interval_error(
             multioutput = None
 
     return np.average(output_errors, weights=multioutput)
+
+
+def mean_absolute_1interval_ranker(ranker, X_test, y_test):
+    """Compute the mean absolute error with +-1 interval on rank model.
+
+    Parameters
+    ----------
+    ranker : ranker model
+        Ranker model with which is going to predict X_test.
+
+    X_test : array-like of shape (n_samples, n_attributes)
+        Test attributes.
+
+    y_test : array-like of shape (n_samples,)
+        Test target.
+
+    Returns
+    -------
+    loss : float
+        Mean absolute error with +-1 interval.
+    """
+    y_true = y_test.to_numpy()
+
+    if type(X_test) == np.ndarray:
+        cols = list(range(X_test.shape[1] - 1)) + ["qid"]
+        X_test = pd.DataFrame(X_test, columns=cols)
+
+    y_pred = (
+        X_test.groupby("qid")
+        .apply(lambda x: ranker_predict(ranker, x, True))
+        .explode()
+        .reset_index(drop=True)
+        .to_numpy(dtype=int)
+    )
+
+    return -mean_absolute_1interval_error(y_true, y_pred)
 
 
 def _check_reg_targets(y_true, y_pred, multioutput, dtype="numeric"):
