@@ -140,7 +140,7 @@ def mean_absolute_ranker(ranker, X_test, y_test):
         .to_numpy(dtype=int)
     )
 
-    return mean_absolute_error(y_true, y_pred)
+    return -mean_absolute_error(y_true, y_pred)
 
 
 @validate_params(

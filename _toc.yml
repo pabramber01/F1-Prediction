@@ -110,3 +110,22 @@ parts:
         sections:
           - file: f1_prediction/other_models/advanced_tuning_posvar
           - file: f1_prediction/other_models/advanced_tuning_pdm
+
+  - caption: Final model
+    chapters:
+      - file: f1_prediction/final_model/model_validation
+        sections:
+          - file: f1_prediction/final_model/model_validation_posvar
+          - file: f1_prediction/final_model/model_validation_pdm
+      - file: f1_prediction/final_model/simple_tuning
+        sections:
+          - file: f1_prediction/final_model/simple_tuning_posvar
+          - file: f1_prediction/final_model/simple_tuning_pdm
+      - file: f1_prediction/final_model/feature_selection
+        sections:
+          - file: f1_prediction/final_model/feature_selection_posvar
+          - file: f1_prediction/final_model/feature_selection_pdm
+      - file: f1_prediction/final_model/advanced_tuning
+        sections:
+          - file: f1_prediction/final_model/advanced_tuning_posvar
+          - file: f1_prediction/final_model/advanced_tuning_pdm
