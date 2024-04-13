@@ -8,8 +8,11 @@ import pandas as pd
 from pathlib import Path
 
 
-def weather():
-    races_df = pd.read_csv("./f1_prediction/assets/data/kaggle/races.csv")
+def weather(season="*"):
+    if season == 2024:
+        races_df = pd.read_csv("./f1_prediction/assets/data/ergast/races.csv")
+    else:
+        races_df = pd.read_csv("./f1_prediction/assets/data/kaggle/races.csv")
 
     weather_df = races_df.iloc[:, [1, 2]].copy()
 
@@ -65,7 +68,13 @@ def weather():
             lambda s: 1 if any(w in s.lower() for w in weather_dict[col]) else 0
         )
 
-    weather_df.to_csv("./f1_prediction/assets/data/scraping/weather.csv", index=False)
+    if season == 2024:
+        weather_df = weather_df[weather_df["year"] == 2024]
+        path = "./f1_prediction/assets/data/scraping/weather_2024.csv"
+    else:
+        path = "./f1_prediction/assets/data/scraping/weather.csv"
+
+    weather_df.to_csv(path, index=False)
 
 
 def circuits_plus():
@@ -192,13 +201,18 @@ def circuits_plusplus():
     )
 
 
-def driver_ratings_ea():
-    urls_by_year = {
-        "2023": "https://www.the-race.com/formula-1/new-f1-games-driver-ratings-show-ea-has-learned-some-lessons/",
-        "2022": "https://www.racefans.net/2022/06/24/formula-1-driver-ratings-for-new-f1-22-game-revealed/",
-        "2021": "https://www.the-race.com/formula-1/f1-2021-driver-ratings-unveiled-as-verstappen-equals-hamilton/",
-        "2020": "https://www.gptoday.net/en/news/f1/255983/all-driver-ratings-from-f1-2020-game-revealed",
-    }
+def driver_ratings_ea(season="*"):
+    if season == 2024:
+        urls_by_year = {
+            "2024": "https://www.racefans.net/2023/08/15/piastri-gets-biggest-ratings-boost-in-f1-23-august-update/",
+        }
+    else:
+        urls_by_year = {
+            "2023": "https://www.the-race.com/formula-1/new-f1-games-driver-ratings-show-ea-has-learned-some-lessons/",
+            "2022": "https://www.racefans.net/2022/06/24/formula-1-driver-ratings-for-new-f1-22-game-revealed/",
+            "2021": "https://www.the-race.com/formula-1/f1-2021-driver-ratings-unveiled-as-verstappen-equals-hamilton/",
+            "2020": "https://www.gptoday.net/en/news/f1/255983/all-driver-ratings-from-f1-2020-game-revealed",
+        }
 
     res = []
 
@@ -216,6 +230,11 @@ def driver_ratings_ea():
                         driver_data.append("_".join(data.split(" ")).lower())
             res.append(tuple(driver_data))
 
+    if season == 2024:
+        path = "./f1_prediction/assets/data/scraping/driver_ratings_ea_2024.csv"
+    else:
+        path = "./f1_prediction/assets/data/scraping/driver_ratings_ea.csv"
+
     pd.DataFrame(
         res,
         columns=[
@@ -227,7 +246,7 @@ def driver_ratings_ea():
             "driverPac",
             "driverOvr",
         ],
-    ).to_csv("./f1_prediction/assets/data/scraping/driver_ratings_ea.csv", index=False)
+    ).to_csv(path, index=False)
 
 
 if __name__ == "__main__":
@@ -239,3 +258,9 @@ if __name__ == "__main__":
         circuits_plusplus()
     if not Path("./f1_prediction/assets/data/scraping/driver_ratings_ea.csv").is_file():
         driver_ratings_ea()
+    if not Path("./f1_prediction/assets/data/scraping/weather_2024.csv").is_file():
+        weather(2024)
+    if not Path(
+        "./f1_prediction/assets/data/scraping/driver_ratings_ea_2024.csv"
+    ).is_file():
+        driver_ratings_ea(2024)

@@ -13,6 +13,8 @@ logging.set_verbosity(logging.WARNING)
 
 from scipy import stats
 
+from IPython.display import display, HTML
+
 from utils.custom_scorers import balanced_accuracy_score
 from utils.custom_cvs import VariableTimeSeriesSplit
 from utils.custom_predicts import ranker_predict
@@ -452,3 +454,81 @@ def model_pgrmlly_outlier_treatment(model, df, X, y, scorer, th):
     ax.grid()
     ax.legend(loc="lower right")
     plt.show()
+
+
+def model_prediction(
+    model,
+    X_train,
+    y_train,
+    X_test,
+    y_test,
+    *,
+    columns={},
+    rank=None,
+    multiclass=True,
+):
+    """Model predict test data.
+
+    Gather the data in a table so that if there is a hit the row is green and if not the row is red.
+
+    Parameters
+    ----------
+    model : array-like
+        Model to do the prediction.
+
+    X_train : array-like of shape (n_samples, n_attributes)
+        Train attributes.
+
+    y_train : array-like of shape (n_samples,)
+        Train target.
+
+    X_train : array-like of shape (m_samples, n_attributes)
+        Test attributes.
+
+    y_train : array-like of shape (m_samples,)
+        Test target.
+
+    columns : dict, default={}
+        Extra columns to add to the table.
+
+    rank : bool, default=None
+        Indicator if it is used to rank or not.
+
+    multiclass : bool, default=True
+        Indicator that it is used for predict variable position or podium.
+    """
+
+    model.fit(X_train, y_train)
+
+    if rank:
+        y_pred = (
+            X_test.groupby("qid")
+            .apply(lambda x: ranker_predict(model, x, multiclass))
+            .explode()
+            .reset_index(drop=True)
+            .to_numpy(dtype=int)
+        )
+    else:
+        y_pred = np.rint(model.predict(X_test)).astype(np.int32)
+
+    r = pd.DataFrame(
+        {
+            **columns,
+            "positionFinal": y_test,
+            "positionPred": y_pred,
+        },
+    )
+
+    r = r.style.apply(
+        lambda x: [
+            (
+                ""
+                if not x.any()
+                else f"background-color: {'#1c542d' if np.abs(x.positionFinal - x.positionPred) <= multiclass else '#800000'}"
+            )
+        ]
+        * len(x),
+        axis=1,
+    )
+
+    display(HTML("<div style='height: 550px'>" + r.to_html() + "</div>"))

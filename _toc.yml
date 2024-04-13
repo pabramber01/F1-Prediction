@@ -129,3 +129,11 @@ parts:
         sections:
           - file: f1_prediction/final_model/advanced_tuning_posvar
           - file: f1_prediction/final_model/advanced_tuning_pdm
+
+  - caption: Testing
+    chapters:
+      - file: f1_prediction/testing/data_preparation
+      - file: f1_prediction/testing/prediction
+        sections:
+          - file: f1_prediction/testing/prediction_posvar
+          - file: f1_prediction/testing/prediction_pdm
